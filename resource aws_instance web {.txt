@@ -1,0 +1,26 @@
+resource "aws_instance" "web" {
+  count         = 3
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  tags = {
+    # count.index will be 0, 1, and 2
+    Name = "web-server-${count.index}"
+  }
+}
+
+
+resource "aws_instance" "app" {
+  for_each = {
+    dev  = "t2.micro"
+    qa   = "t2.small"
+    prod = "t2.medium"
+  }
+
+  ami           = "ami-0abcdef1234567890"
+  instance_type = each.value
+
+  tags = {
+    Name = "app-${each.key}"
+  }
+}
